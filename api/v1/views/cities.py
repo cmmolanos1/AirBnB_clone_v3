@@ -11,11 +11,11 @@ from models.city import City
 def ret_cities_in_state(state_id):
     """ Retrieves the list of all City objects of a State """
     list_cities = []
-    state = storage.get("State", str(state_id))    
+    state = storage.get("State", str(state_id))
     if state is None:
         abort(404)
     # Remember is an objects dictionary
-    cities = storage.all("City").values()    
+    cities = storage.all("City").values()
     for city in cities:
         if city.state_id == str(state_id):
             list_cities.append(city.to_dict())
@@ -30,6 +30,7 @@ def ret_cities_id(city_id):
         abort(404)
     return jsonify(city.to_dict())
 
+
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
 def del_cities_id(city_id):
     """ Delete a City object depends on its ID"""
@@ -40,13 +41,14 @@ def del_cities_id(city_id):
     storage.save()
     return (jsonify({})), 200
 
+
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
 def post_cities(state_id):
     """ POST a new cities, by typing the name and the id """
-    state = storage.get("State", str(state_id))    
+    state = storage.get("State", str(state_id))
     if state is None:
         abort(404)
-        
+
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'name' not in request.json:
@@ -58,6 +60,7 @@ def post_cities(state_id):
     city = City(**content)
     city.save()
     return jsonify(city.to_dict()), 201
+
 
 @app_views.route('/cities/<city_id>', methods=['PUT'])
 def put_cities(city_id):
