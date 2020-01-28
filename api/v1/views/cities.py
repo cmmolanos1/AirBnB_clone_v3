@@ -54,7 +54,6 @@ def post_cities(state_id):
     content = request.get_json()
     # Adding state_id as attribute
     content['state_id'] = str(state_id)
-    print(content)
     # Imitating create in console
     city = City(**content)
     city.save()
