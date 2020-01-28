@@ -15,14 +15,11 @@ def status():
 @app_views.route('/stats')
 def cls_count():
     """ Export as json th number of objects of cls"""
-    count = {"amenities": "Amenity",
-             "cities": "City",
-             "places": "Place",
-             "reviews": "Review",
-             "states": "State",
-             "users": "User"}
-
-    for key, value in count.items():
-        count[key] = storage.count(value)
+    count = {"amenities": storage.count("Amenity"),
+             "cities": storage.count("City"),
+             "places": storage.count("Place"),
+             "reviews": storage.count("Review"),
+             "states": storage.count("State"),
+             "users": storage.count("User")}
 
     return jsonify(count)
