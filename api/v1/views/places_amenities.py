@@ -68,4 +68,4 @@ def post_amenities_in_place(place_id, amenity_id):
     # Link the amenity with the place
     place.amenities.append(amenity)
     storage.save()
-    return jsonify(amenity.to_dict()), 200
+    return jsonify(amenity.to_dict()), 201
