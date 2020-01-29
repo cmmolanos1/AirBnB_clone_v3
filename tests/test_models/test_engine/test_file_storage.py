@@ -113,3 +113,21 @@ class TestFileStorage(unittest.TestCase):
         with open("file.json", "r") as f:
             js = f.read()
         self.assertEqual(json.loads(string), json.loads(js))
+
+    @unittest.skipIf(models.storage_t == 'db', "not testing file storage")
+    def test_new_FileStorage(self):
+        """ Test if 'new' method is working good """
+        storage = FileStorage()
+        all_objects = storage.all()
+        my_model2 = State()
+        my_model2.name = "Bogota D.C."
+        storage.new(my_model2)
+        self.assertEqual(type(all_objects), dict)
+        self.assertIsNotNone(all_objects)
+        self.assertIs(all_objects, storage._FileStorage__objects)
+        key = my_model2.__class__.__name__ + "." + my_model2.id
+        self.assertIsNotNone(all_objects[key])
+        print_obj = all_objects[key]
+        string = "[State] ({}) {}".format(my_model2.id,
+                                          my_model2.__dict__)
+        self.assertEqual(string, str(print_obj))
