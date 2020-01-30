@@ -143,7 +143,8 @@ def put_places_search():
                 place = place.to_dict()
                 if "amenities" in place:
                     del place["amenities"]
-                ids_in_result = [resul['id'] for resul in restult]
+                ids_in_result = [resul['id'] for resul in result]
+                print(ids_in_result)
                 if place['id'] not in ids_in_result:
                     result.append(place)
 
