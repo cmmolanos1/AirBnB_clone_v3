@@ -9,7 +9,17 @@ from models.review import Review
 
 @app_views.route('/places/<place_id>/reviews', methods=['GET'])
 def ret_rev_in_place(place_id):
-    """ Retrieves the list of all Reviews objects of a place """
+    """ Retrieves the list of all Reviews objects of a place
+    ---
+    tags:
+      - "PLACES REVIEWS"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of the place where we want to read the reviews"
+        required: true
+        type: "string"
+    """
     list_reviews = []
     place = storage.get("Place", str(place_id))
     if place is None:
@@ -24,7 +34,24 @@ def ret_rev_in_place(place_id):
 
 @app_views.route('/reviews/<review_id>', methods=['GET'])
 def ret_reviews_id(review_id):
-    """ Retrieves an object depends on its ID """
+    """Retrieves a Review object when it's typed the REVIEW ID.
+    ---
+    tags:
+      - "PLACES REVIEWS"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "review_id"
+        in: "path"
+        description: "ID of the review to return"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     review = storage.get("Review", str(review_id))
     if review is None:
         abort(404)
@@ -33,7 +60,24 @@ def ret_reviews_id(review_id):
 
 @app_views.route('/reviews/<review_id>', methods=['DELETE'])
 def del_reviews_id(review_id):
-    """ Delete a Review object depends on its ID"""
+    """ Delete a Review object depends on its ID
+    ---
+    tags:
+      - "PLACES REVIEWS"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "review_id"
+        in: "path"
+        description: "ID of review to delete"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     review = storage.get("Review", str(review_id))
     if review is None:
         abort(404)
@@ -44,7 +88,42 @@ def del_reviews_id(review_id):
 
 @app_views.route('places/<place_id>/reviews', methods=['POST'])
 def post_reviews(place_id):
-    """ POST a new review, by typing the name and the id """
+    """ POST a new review, by typing the user id and a description
+    ---
+    tags:
+        - "PLACES REVIEWS"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "Place ID"
+          in: "path"
+          description: "The ID of place we want to add reviews."
+          required: true
+        - name: "User and Description"
+          in: "body"
+          description: "Field to add the User ID and the description."
+          required: true
+          schema:
+              id: postReview
+              type: "object"
+              "properties":
+                "user_id":
+                  "type": string
+                "text":
+                  "type": string
+          examples:
+              user_id: "2b9a4627-8a9e-4f32-a752-9a84fa7f4efd"
+              text: "Good place"
+    responses:
+        201:
+            description: "successful operation"
+        400:
+            description: "Not a JSON - Missing user_id - Missing text"
+        404:
+            description: "not found"
+    """
     place = storage.get("Place", str(place_id))
     if place is None:
         abort(404)
@@ -70,7 +149,41 @@ def post_reviews(place_id):
 
 @app_views.route('/reviews/<review_id>', methods=['PUT'])
 def put_reviews(review_id):
-    """ Update a city object """
+    """ Update a review object
+    ---
+    tags:
+        - "PLACES REVIEWS"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "review_id"
+          in: "path"
+          description: "ID of review to update"
+          required: true
+          type: "string"
+        - name: "User and Description"
+          in: "body"
+          description: "Field to add the User ID and the description."
+          required: true
+          schema:
+              id: postReview
+              type: "object"
+              "properties":
+                "user_id":
+                  "type": string
+                "text":
+                  "type": string
+          examples:
+              user_id: "2b9a4627-8a9e-4f32-a752-9a84fa7f4efd"
+              text: "Good place"
+    responses:
+        200:
+            description: "successful operation"
+        404:
+            description: "not found"
+    """
     review = storage.get("Review", str(review_id))
     if review is None:
         abort(404)

@@ -9,8 +9,24 @@ from models.place import Place
 
 @app_views.route('/places/<place_id>/amenities', methods=['GET'])
 def ret_amenities_in_place(place_id):
-    """ Retrieves the list of all Places amenities objects
-    of a Place """
+    """Retrieves a list of all Amenities linked to a Place.
+    ---
+    tags:
+      - "PLACES AMENITIES"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of place"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     list_amenities = []
     place = storage.get("Place", str(place_id))
     if place is None:
@@ -25,7 +41,30 @@ def ret_amenities_in_place(place_id):
 @app_views.route('/places/<place_id>/amenities/<amenity_id>',
                  methods=['DELETE'])
 def del_amenitie_in_place(place_id, amenity_id):
-    """ Delete an amenity object from a place"""
+    """Deletes an Amenity object from a Place.
+    ---
+    tags:
+      - "PLACES AMENITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of place where the amenity is deleted"
+        required: true
+        type: "string"
+      - name: "amenity_id"
+        in: "path"
+        description: "ID of amenity"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     place = storage.get("Place", str(place_id))
     if place is None:
         abort(404)
@@ -51,7 +90,30 @@ def del_amenitie_in_place(place_id, amenity_id):
 
 @app_views.route('/places/<place_id>/amenities/<amenity_id>', methods=['POST'])
 def post_amenities_in_place(place_id, amenity_id):
-    """ POST a new amenity in a specific place """
+    """ POST a new amenity in a specific place.
+    ---
+    tags:
+      - "PLACES AMENITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of place"
+        required: true
+        type: "string"
+      - name: "amenity_id"
+        in: "path"
+        description: "ID of amenity to be linked"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     place = storage.get("Place", place_id)
     if place is None:
         abort(404)

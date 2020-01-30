@@ -7,9 +7,17 @@ from api.v1.views import app_views
 from flask import Blueprint
 from flask_cors import CORS
 import os
+from flasgger import Swagger
 
 
 app = Flask(__name__)
+app.config['SWAGGER'] = {
+    'title': 'HBNB API',
+    'description': 'Documentation explaining the diferents method to work\
+    with our API',
+    'uiversion': 3
+}
+swagger = Swagger(app)
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 app.url_map.strict_slashes = False
 app.register_blueprint(app_views)

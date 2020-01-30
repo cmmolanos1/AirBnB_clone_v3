@@ -20,7 +20,25 @@ def ret_amenities():
 
 @app_views.route('/amenities/<amenity_id>', methods=['GET'])
 def ret_amenities_id(amenity_id):
-    """ Retrieves an object depends on its ID """
+    """Retrieves an Amenity object when it's typed the AMENITY ID.
+    ---
+    tags:
+      - "AMENITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "amenity_id"
+        in: "path"
+        description: "ID of amenity to return"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     try:
         key = "Amenity." + amenity_id
         return storage.all("Amenity")[key].to_dict()
@@ -30,7 +48,25 @@ def ret_amenities_id(amenity_id):
 
 @app_views.route('/amenities/<amenity_id>', methods=['DELETE'])
 def del_amenities_id(amenity_id):
-    """ Delete a Amenity object depends on its ID"""
+    """Deletes a AMENITY object by its ID.
+    ---
+    tags:
+      - "AMENITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "amenity_id"
+        in: "path"
+        description: "ID of amenity to delete"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     amenity = storage.get("Amenity", amenity_id)
     if amenity is None:
         abort(404)
@@ -41,7 +77,35 @@ def del_amenities_id(amenity_id):
 
 @app_views.route('/amenities', methods=['POST'])
 def post_amenities():
-    """ POST a new amenity, by typing the name """
+    """POST a new amenity, by typing the name.
+    ---
+    tags:
+        - "AMENITIES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "Amenity Name"
+          in: "body"
+          description: "Name of the new amenity to be created"
+          required: true
+          schema:
+              id: postName
+              type: "object"
+              properties:
+                name:
+                  type: string
+          example:
+              "name": "Playground"
+    responses:
+        201:
+            description: "successful operation"
+        404:
+            description: "not found"
+        400:
+            description: "Not a JSON, or, Missing name"
+    """
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'name' not in request.json:
@@ -55,7 +119,39 @@ def post_amenities():
 
 @app_views.route('/amenities/<amenity_id>', methods=['PUT'])
 def put_amenities(amenity_id):
-    """ Update a Amenity object """
+    """UPDATE the name of amenity object.
+    ---
+    tags:
+        - "AMENITIES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "Amenity ID"
+          in: "path"
+          description: "ID of the amenity to be updated"
+          required: true
+        - name: "Amenity Name"
+          in: "body"
+          description: "Name of the new amenity to be created"
+          required: true
+          schema:
+              id: postName
+              type: "object"
+              properties:
+                name:
+                  type: string
+          example:
+              "name": "POOL"
+    responses:
+        201:
+            description: "successful operation"
+        404:
+            description: "not found"
+        400:
+            description: "Not a JSON"
+    """
     amenity = storage.get("Amenity", amenity_id)
     if amenity is None:
         abort(404)
