@@ -91,7 +91,7 @@ def put_places(place_id):
 
 @app_views.route('/places_search', methods=['POSt'])
 def put_places_search():
-
+    """ print a place object by city,state or amenitie"""
     search = request.get_json()
     all_places = storage.all("Place")
     result = []
