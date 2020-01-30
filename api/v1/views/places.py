@@ -87,3 +87,64 @@ def put_places(place_id):
             setattr(place, key, val)
     place.save()
     return jsonify(place.to_dict()), 200
+
+
+@app_views.route('/places_search', methods=['POSt'])
+def put_places_search():
+
+    search = request.get_json()
+    all_places = storage.all("Place")
+    result = []
+    # rule empty body
+    try:
+        if len(search) == 0 and type(search) == dict:
+            result = [value.to_dict() for value in all_places.values()]
+            return jsonify(result)
+    except:
+        #rule not json
+        if not request.json:
+            return jsonify({"error": "Not a JSON"}), 400
+
+    #rule empty values
+    is_empty = [len(value) == 0 for value in search.values()]
+    if False not in is_empty:
+        result = [value.to_dict() for value in all_places.values()]
+        return jsonify(result)
+    #rule if amenities in json
+    if "states" in search and len(search["states"]) != 0:
+        for state_id in search["states"]:
+            state = storage.get("State", str(state_id))
+            if state:
+                for city in state.cities:
+                    for place in city.places:
+                        if place.to_dict() not in result:
+                            result.append(place.to_dict())
+            else:
+                pass
+    #rule if cities in json
+    if "cities" in search and len(search["cities"]) != 0:
+        for city_id in search["cities"]:
+            city = storage.get("City", city_id)
+            print(city)
+            if city:
+                for place in city.places:
+                    if place.to_dict() not in result:
+                        result.append(place.to_dict())
+    #rule if amenities in json
+    ameni = []
+    if "amenities" in search and len(search["amenities"]) != 0:
+        all_places = storage.all("Place").values()
+        for place in all_places:
+            flag = 0
+            am_list = [amenity.id for amenity in place.amenities]
+            for amenity_id in search["amenities"]:
+                if amenity_id not in am_list:
+                    flag = 1
+            if flag == 0 and len(am_list) > 0:
+                if place not in result:
+                    place = place.to_dict()
+                    if "amenities" in place:
+                        del place["amenities"]
+                    if place not in result:
+                        result.append(place)
+    return jsonify(result)
