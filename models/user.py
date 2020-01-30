@@ -27,7 +27,7 @@ class User(BaseModel, Base):
 
     def __init__(self, *args, **kwargs):
         """initializes user"""
-        if kwargs['password']:
+        if 'password' in kwargs:
             passwrd = hashlib.md5(kwargs['password'].encode()).hexdigest()
             self.password = passwrd
         super().__init__(*args, **kwargs)
