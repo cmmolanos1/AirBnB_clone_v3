@@ -95,15 +95,14 @@ def put_places_search():
     search = request.get_json()
     all_places = storage.all("Place")
     result = []
-    # rule empty body
-    try:
-        if len(search) == 0 and type(search) == dict:
-            result = [value.to_dict() for value in all_places.values()]
-            return jsonify(result)
-    except:
-        # rule not json
-        if not request.json:
-            return jsonify({"error": "Not a JSON"}), 400
+
+    # rule not json
+    if not request.json:
+        return jsonify({"error": "Not a JSON"}), 400
+
+    if len(search) == 0 and type(search) == dict:
+        result = [value.to_dict() for value in all_places.values()]
+        return jsonify(result)
 
     # rule empty values
     is_empty = [len(value) == 0 for value in search.values()]
