@@ -264,10 +264,10 @@ def put_places_search():
                 if amenity_id not in am_list:
                     flag = 1
             if flag == 0 and len(am_list) > 0:
-                if place not in result:
-                    place = place.to_dict()
-                    if "amenities" in place:
-                        del place["amenities"]
-                    if place not in result:
-                        result.append(place)
+                place = place.to_dict()
+                if "amenities" in place:
+                    del place["amenities"]
+                ids_in_result = [resul['id'] for resul in restult]
+                if place['id'] not in ids_in_result:
+                    result.append(place)
     return jsonify(result)
