@@ -8,13 +8,35 @@ from models import storage
 
 @app_views.route('/status')
 def status():
-    """ Get the status in json"""
+    """Shows the status of the API.
+    ---
+    tags:
+      - "INDEX"
+    produces:
+      - "application/xml"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     return jsonify({"status": "OK"})
 
 
 @app_views.route('/stats')
 def cls_count():
-    """ Export as json th number of objects of cls"""
+    """Shows the number of objects of each type.
+    ---
+    tags:
+      - "INDEX"
+    produces:
+      - "application/xml"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     count = {"amenities": storage.count("Amenity"),
              "cities": storage.count("City"),
              "places": storage.count("Place"),

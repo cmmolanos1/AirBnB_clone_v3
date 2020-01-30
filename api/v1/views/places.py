@@ -9,7 +9,24 @@ from models.place import Place
 
 @app_views.route('/cities/<city_id>/places', methods=['GET'])
 def ret_places_in_city(city_id):
-    """ Retrieves the list of all Place objects of a City """
+    """Retrieves the list of all Place objects of a City
+    ---
+    tags:
+      - "PLACES"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "city_id"
+        in: "path"
+        description: "ID of city where we want to see places"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     list_places = []
     city = storage.get("City", str(city_id))
     if city is None:
@@ -24,7 +41,24 @@ def ret_places_in_city(city_id):
 
 @app_views.route('/places/<place_id>', methods=['GET'])
 def ret_places_id(place_id):
-    """ Retrieves an object depends on its ID """
+    """Retrieves an object depends on its ID
+    ---
+    tags:
+      - "PLACES"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of place to return"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     place = storage.get("Place", str(place_id))
     if place is None:
         abort(404)
@@ -33,7 +67,24 @@ def ret_places_id(place_id):
 
 @app_views.route('/places/<place_id>', methods=['DELETE'])
 def del_places_id(place_id):
-    """ Delete a Place object depends on its ID"""
+    """ Delete a Place object depends on its ID
+    ---
+    tags:
+      - "PLACES"
+    produces:
+      - "application/json"
+    parameters:
+      - name: "place_id"
+        in: "path"
+        description: "ID of place to delete"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     place = storage.get("Place", str(place_id))
     reviews = storage.all("Review").values()
     for review in reviews:
@@ -48,7 +99,39 @@ def del_places_id(place_id):
 
 @app_views.route('/cities/<city_id>/places', methods=['POST'])
 def post_places(city_id):
-    """ POST a new places, by typing the name and the id """
+    """ POST a new place, by typing the name and the id
+    ---
+    tags:
+        - "PLACES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "city_id"
+          in: "path"
+          description: "Id of the city where we want to post a new place"
+          required: true
+        - name: "Place Name and User ID"
+          in: "body"
+          description: "Name of the new place and the owner user id"
+          required: true
+          schema:
+              id: postPlace
+              type: "object"
+              "properties":
+                "name":
+                  "type": string
+                "user_id":
+                  "type": string
+    responses:
+        201:
+            description: "successful operation"
+        400:
+            description: "Not a JSON - Missing name - Missing user_id"
+        404:
+            description: "not found"
+    """
     city = storage.get("City", str(city_id))
     if city is None:
         abort(404)
@@ -72,7 +155,39 @@ def post_places(city_id):
 
 @app_views.route('/places/<place_id>', methods=['PUT'])
 def put_places(place_id):
-    """ Update a place object """
+    """ Update a place object
+    ---
+    tags:
+        - "PLACES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "place_id"
+          in: "path"
+          description: "Id of the place that we want to update"
+          required: true
+        - name: "Place Name and User ID"
+          in: "body"
+          description: "Name of the new place and the owner user id"
+          required: true
+          schema:
+              id: postPlace
+              type: "object"
+              "properties":
+                "name":
+                  "type": string
+                "user_id":
+                  "type": string
+    responses:
+        201:
+            description: "successful operation"
+        400:
+            description: "Not a JSON - Missing name - Missing user_id"
+        404:
+            description: "not found"
+    """
     place = storage.get("Place", str(place_id))
     if place is None:
         abort(404)
@@ -91,7 +206,16 @@ def put_places(place_id):
 
 @app_views.route('/places_search', methods=['POST'])
 def put_places_search():
-    """ print a place object by city,state or amenitie"""
+    """Print a place object by city,state or amenities
+    ---
+    tags:
+        - "PLACES"
+    responses:
+        201:
+            description: "successful operation"
+        400:
+            description: "Not a JSON"
+    """
     search = request.get_json()
     all_places = storage.all("Place")
     result = []
@@ -146,5 +270,4 @@ def put_places_search():
                 ids_in_result = [resul['id'] for resul in restult]
                 if place['id'] not in ids_in_result:
                     result.append(place)
-
     return jsonify(result)

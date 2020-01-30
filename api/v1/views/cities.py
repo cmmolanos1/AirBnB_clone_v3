@@ -9,7 +9,25 @@ from models.city import City
 
 @app_views.route('/states/<state_id>/cities', methods=['GET'])
 def ret_cities_in_state(state_id):
-    """ Retrieves the list of all City objects of a State """
+    """Retrieves the list of all City objects of a State .
+    ---
+    tags:
+      - "CITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "state_id"
+        in: "path"
+        description: "ID of state"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     list_cities = []
     state = storage.get("State", str(state_id))
     if state is None:
@@ -24,7 +42,25 @@ def ret_cities_in_state(state_id):
 
 @app_views.route('/cities/<city_id>', methods=['GET'])
 def ret_cities_id(city_id):
-    """ Retrieves an object depends on its ID """
+    """Retrieves the a City objects when CITY ID is typed.
+    ---
+    tags:
+      - "CITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "city_id"
+        in: "path"
+        description: "ID of city"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     city = storage.get("City", str(city_id))
     if city is None:
         abort(404)
@@ -33,7 +69,25 @@ def ret_cities_id(city_id):
 
 @app_views.route('/cities/<city_id>', methods=['DELETE'])
 def del_cities_id(city_id):
-    """ Delete a City object depends on its ID"""
+    """Deletes a CITY object by its ID.
+    ---
+    tags:
+      - "CITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "city_id"
+        in: "path"
+        description: "ID of city to delete"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     city = storage.get("City", str(city_id))
     if city is None:
         abort(404)
@@ -44,7 +98,39 @@ def del_cities_id(city_id):
 
 @app_views.route('/states/<state_id>/cities', methods=['POST'])
 def post_cities(state_id):
-    """ POST a new cities, by typing the name and the id """
+    """ POST a new cities, by typing the name and the id.
+    ---
+    tags:
+      - "CITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+        - name: "state_id"
+          in: "path"
+          description: "ID of state to add city"
+          required: true
+          type: "string"
+        - name: "City Name"
+          in: "body"
+          description: "Name of the new city to be created"
+          required: true
+          schema:
+            id: postName
+            type: "object"
+            "properties":
+                "name":
+                    "type": string
+          examples:
+              name: Sacramento
+    responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Not a JSON / Missing name"
+        404:
+          description: "not found"
+    """
     state = storage.get("State", str(state_id))
     if state is None:
         abort(404)
@@ -64,7 +150,39 @@ def post_cities(state_id):
 
 @app_views.route('/cities/<city_id>', methods=['PUT'])
 def put_cities(city_id):
-    """ Update a city object """
+    """ Update a CITY object, changing its name.
+    ---
+    tags:
+      - "CITIES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "city_id"
+        in: "path"
+        description: "ID of city to update"
+        required: true
+        type: "string"
+      - name: "City Name"
+        in: "body"
+        description: "Name of the city to be updated"
+        required: true
+        schema:
+            id: postName
+            type: "object"
+            "properties":
+                "name":
+                    "type": string
+        examples:
+            name: Sacramento
+    responses:
+        200:
+          description: "successful operation"
+        400:
+          description: "Not a JSON"
+        404:
+          description: "not found"
+    """
     city = storage.get("City", str(city_id))
     if city is None:
         abort(404)

@@ -9,7 +9,11 @@ from models.state import State
 
 @app_views.route('/states', methods=['GET'])
 def ret_states():
-    """ Retrieves the list of all State objects """
+    """ Retrieves the list of all State objects
+    ---
+    tags:
+      - "STATES"
+    """
     list_states = []
     states = storage.all("State")
     # Remember we are calling an object's dictionary
@@ -20,7 +24,28 @@ def ret_states():
 
 @app_views.route('/states/<state_id>', methods=['GET'])
 def ret_states_id(state_id):
-    """ Retrieves an object depends on its ID """
+    """Retrieves a State object when it's typed the STATE ID.
+    ---
+    tags:
+      - "STATES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "state_id"
+        in: "path"
+        description: "ID of state to return"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+          schema:
+          id: Palette
+          type: object
+        404:
+          description: "not found"
+    """
     try:
         key = "State." + state_id
         return storage.all("State")[key].to_dict()
@@ -30,7 +55,25 @@ def ret_states_id(state_id):
 
 @app_views.route('/states/<state_id>', methods=['DELETE'])
 def del_states_id(state_id):
-    """ Delete a State object depends on its ID"""
+    """Deletes a STATE object by its ID.
+    ---
+    tags:
+      - "STATES"
+    produces:
+      - "application/xml"
+      - "application/json"
+    parameters:
+      - name: "state_id"
+        in: "path"
+        description: "ID of state to delete"
+        required: true
+        type: "string"
+    responses:
+        200:
+          description: "successful operation"
+        404:
+          description: "not found"
+    """
     state = storage.get("State", state_id)
     if state is None:
         abort(404)
@@ -41,7 +84,33 @@ def del_states_id(state_id):
 
 @app_views.route('/states/', methods=['POST'])
 def post_states():
-    """ POST a new state, by typing the name """
+    """Creates a new state, posting its name.
+    ---
+    tags:
+        - "STATES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "State Name"
+          in: "body"
+          description: "Name of the new state to be created"
+          required: true
+          schema:
+              id: postName
+              type: "object"
+              "properties":
+                "name":
+                  "type": string
+          examples:
+              name: California
+    responses:
+        201:
+            description: "successful operation"
+        404:
+            description: "not found"
+    """
     if not request.json:
         return jsonify({"error": "Not a JSON"}), 400
     if 'name' not in request.json:
@@ -55,7 +124,37 @@ def post_states():
 
 @app_views.route('/states/<state_id>', methods=['PUT'])
 def put_states(state_id):
-    """ Update a State object """
+    """UPDATE the state name.
+    ---
+    tags:
+        - "STATES"
+    consumes:
+        - "application/json"
+    produces:
+        - "application/json"
+    parameters:
+        - name: "State ID"
+          in: "path"
+          description: "ID of state to update"
+          required: true
+        - name: "State Name"
+          in: "body"
+          description: "Name of the new state to be updated"
+          required: true
+          schema:
+              id: postName
+              type: "object"
+              "properties":
+                "name":
+                  "type": string
+          examples:
+              name: Nebraska
+    responses:
+        200:
+            description: "successful operation"
+        404:
+            description: "not found"
+    """
     state = storage.get("State", state_id)
     if state is None:
         abort(404)
