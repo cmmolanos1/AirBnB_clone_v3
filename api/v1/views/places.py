@@ -95,6 +95,8 @@ def put_places_search():
     search = request.get_json()
     all_places = storage.all("Place")
     result = []
+    no_amenity = True
+
     # rule empty body
     try:
         if len(search) == 0 and type(search) == dict:
@@ -121,6 +123,7 @@ def put_places_search():
                             result.append(place.to_dict())
             else:
                 pass
+        no_amenity = False
     # rule if cities in json
     if "cities" in search and len(search["cities"]) != 0:
         for city_id in search["cities"]:
@@ -129,10 +132,15 @@ def put_places_search():
                 for place in city.places:
                     if place.to_dict() not in result:
                         result.append(place.to_dict())
+        no_amenity = False
     # rule if amenities in json
-    ameni = []
     if "amenities" in search and len(search["amenities"]) != 0:
-        all_places = storage.all("Place").values()
+        if no_amenity is False:
+            all_places = []
+            for place in result:
+                all_places.append(storage.get("Place", str(place["id"])))
+        else:
+            all_places = storage.all("Place").values()
         for place in all_places:
             flag = 0
             am_list = [amenity.id for amenity in place.amenities]
@@ -147,5 +155,4 @@ def put_places_search():
                 print(ids_in_result)
                 if place['id'] not in ids_in_result:
                     result.append(place)
-
     return jsonify(result)
