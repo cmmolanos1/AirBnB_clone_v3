@@ -89,7 +89,7 @@ def put_places(place_id):
     return jsonify(place.to_dict()), 200
 
 
-@app_views.route('/places_search', methods=['POSt'])
+@app_views.route('/places_search', methods=['POST'])
 def put_places_search():
     """ print a place object by city,state or amenitie"""
     search = request.get_json()
