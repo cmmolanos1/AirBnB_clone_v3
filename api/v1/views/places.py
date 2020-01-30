@@ -125,7 +125,6 @@ def put_places_search():
     if "cities" in search and len(search["cities"]) != 0:
         for city_id in search["cities"]:
             city = storage.get("City", city_id)
-            print(city)
             if city:
                 for place in city.places:
                     if place.to_dict() not in result:
