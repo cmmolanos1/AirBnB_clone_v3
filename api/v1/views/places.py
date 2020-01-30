@@ -161,5 +161,4 @@ def put_places_search():
                 print(ids_in_result)
                 if place['id'] not in ids_in_result:
                     result.append(place)
-    
     return jsonify(result)
