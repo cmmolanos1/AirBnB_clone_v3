@@ -15,7 +15,7 @@ app.config['SWAGGER'] = {
     'title': 'HBNB API',
     'description': 'Documentation explaining the diferents method to work\
     with our API',
-    'uiversion': 3
+    'uiversion': 2
 }
 swagger = Swagger(app)
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
